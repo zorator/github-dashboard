@@ -1,7 +1,6 @@
-import {useEffect, useState} from "react";
-
-import GithubApi, {OrganizationId, PullRequest, RepositoryConfig} from "../github.api.ts";
+import GithubApi, {OrganizationId, RepositoryConfig} from "../github.api.ts";
 import PullRequestComponent from "./pull-request.component.tsx";
+import {usePromise} from "../hooks/promise.hook.ts";
 
 interface Props {
     organizationId: OrganizationId
@@ -10,29 +9,19 @@ interface Props {
 
 function RepositoryComponent({repositoryConfig, organizationId}: Props) {
 
-    const [prs, setPrs] = useState<PullRequest[]>([])
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        setLoading(true);
-        GithubApi.getPullRequests(organizationId, repositoryConfig)
-            .then((prRes) => {
-                setPrs(prRes);
-                setLoading(false);
-            })
-            .catch((e: unknown) => {
-                throw e;
-            })
-    }, [repositoryConfig, organizationId])
+    const {result: prs, status} = usePromise(
+        () => GithubApi.getPullRequests(organizationId, repositoryConfig),
+        [repositoryConfig, organizationId]
+    )
 
     return <div>
         <h3>{repositoryConfig.id}&nbsp;<a href={`https://github.com/${organizationId}/${repositoryConfig.id}/pulls`}
                                           target="_blank"
                                           rel="noreferrer">🌐</a></h3>
         {
-            loading
+            status === "loading"
                 ? "Chargement en cours"
-                : prs.map((pr) =>
+                : (prs || []).map((pr) =>
                     <PullRequestComponent pullRequest={pr} key={pr.id}/>)
         }
     </div>
