@@ -1,14 +1,16 @@
 import GithubApi, {PullRequest} from "../github.api.ts";
-import {BranchesOutlined} from "@ant-design/icons";
-import {Tag} from "antd";
+import {BranchesOutlined, CheckCircleFilled} from "@ant-design/icons";
+import {Tag, theme} from "antd";
 import {usePromise} from "../hooks/promise.hook.ts";
 import StatusTagComponent from "./status-tag.component.tsx";
+import UserAvatarComponent from "./user-avatar.component.tsx";
 
 interface Props {
     pullRequest: PullRequest
 }
 
 function PullRequestStatusComponent({pullRequest}: Props) {
+    const {token} = theme.useToken();
     const {result: status} = usePromise(
         () => GithubApi.getBuildStatus(pullRequest),
         [pullRequest]
@@ -18,13 +20,16 @@ function PullRequestStatusComponent({pullRequest}: Props) {
         () => GithubApi.getReviews(pullRequest),
         [pullRequest]
     )
+
     const filteredReviews = (reviews || []).filter(review => review.state === 'APPROVED')
 
     return <>
         {pullRequest.draft ? <Tag>Draft</Tag> : null}
         <StatusTagComponent status={status}><BranchesOutlined/></StatusTagComponent>
         {filteredReviews.map(review =>
-            <StatusTagComponent key={review.id} status="success">{review.user?.login}</StatusTagComponent>)}
+            <UserAvatarComponent key={review.id} user={review.user}
+                                 badge={<CheckCircleFilled style={{color: token.colorSuccess}}/>}/>
+        )}
     </>
 }
 
