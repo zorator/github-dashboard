@@ -48,22 +48,37 @@ const getBuildStatus = async (pullRequest: PullRequest): Promise<BuildStatus> =>
         headers: {
             'X-GitHub-Api-Version': '2022-11-28'
         }
-    }).then(res => res.data)
+    })
+        .then(res => res.data)
         .then(data => {
-            const pendingStatuses: CheckSuite['check_suites'][0]['status'][] = ["in_progress", "waiting", "requested", "pending"];
-            const pendingCheck = data.check_suites.find(check => pendingStatuses.includes(check.status))
-            if(pendingCheck){
-                return 'in_progress';
+            if(data.check_suites.length > 0){
+                const lastDate = data.check_suites
+                    .map(suite => suite.created_at)
+                    .sort()
+                    .reverse()[0];
+                return data.check_suites.filter(suite => suite.created_at == lastDate);
             }
-
+            return data.check_suites;
+        })
+        .then(check_suites => {
+            const pendingStatuses: CheckSuite['check_suites'][0]['status'][] = ["in_progress", "waiting", "requested", "pending"];
             const failureConclusions: CheckSuite['check_suites'][0]['conclusion'][] = [
                 "failure", "cancelled", "timed_out", "action_required", "startup_failure", "stale"]
-
-            const failCheck = data.check_suites.find(check => failureConclusions.includes(check.conclusion))
-            const successCheck = data.check_suites.find(check => check.conclusion === 'success')
-
-            return failCheck ? 'failure' : successCheck ? 'success' : null;
+            if(findByFieldValueIncludedIn(check_suites, 'status', pendingStatuses)){
+                return 'in_progress';
+            }
+            if (findByFieldValueIncludedIn(check_suites, 'conclusion', failureConclusions)) {
+                return 'failure';
+            }
+            if (findByFieldValueIncludedIn(check_suites, 'conclusion', ['success'])) {
+                return 'success';
+            }
+            return null;
         })
+}
+
+const findByFieldValueIncludedIn = <T, S>(objects: T[], key: keyof T, values: S[]) => {
+    return objects.find(object => values.includes(object[key] as S))
 }
 
 const getReviews = async (pullRequest: PullRequest): Promise<Reviews> => {
