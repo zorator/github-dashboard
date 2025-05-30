@@ -1,7 +1,7 @@
 import {BuildStatus} from "../github.api.ts";
 import {CheckCircleFilled, CloseCircleFilled, LoadingOutlined} from "@ant-design/icons";
 import {Tag, theme} from "antd";
-import {PropsWithChildren} from "react";
+import {PropsWithChildren, useMemo} from "react";
 
 interface Props {
     status: BuildStatus | undefined
@@ -9,12 +9,18 @@ interface Props {
 
 function StatusTagComponent({status, children}: PropsWithChildren<Props>) {
     const {token} = theme.useToken();
-    const checkCircleFilled = <CheckCircleFilled style={{color: token.colorSuccess}}/>;
-    const closeCircleFilled = <CloseCircleFilled style={{color: token.colorError}}/>;
-    const icon =
-        status === 'success' ? checkCircleFilled :
-            status === 'failure' ? closeCircleFilled :
-                <LoadingOutlined/>;
+    const icon = useMemo(() => {
+        switch (status) {
+            case 'success':
+                return <CheckCircleFilled style={{color: token.colorSuccess}}/>;
+            case 'failure':
+                return <CloseCircleFilled style={{color: token.colorError}}/>;
+            case 'in_progress':
+                return <LoadingOutlined/>;
+            default:
+                return null;
+        }
+    }, [status, token])
     return <Tag icon={icon}>{children}</Tag>
 }
 
