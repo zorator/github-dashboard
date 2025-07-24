@@ -18,7 +18,7 @@ export type OrganizationListItem = Unpacked<OrganizationList>;
 export type CheckSuite = Endpoints["GET /repos/{owner}/{repo}/commits/{ref}/check-suites"]["response"]["data"];
 export type BuildStatus = 'success' | 'failure' | 'in_progress' | null;
 export type Reviews = Endpoints["GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews"]["response"]["data"];
-export type User = Unpacked<Reviews>["user"];
+export type Review = Unpacked<Reviews>
 
 const getPullRequests = async (organizationId: OrganizationId, repoConfig: RepositoryConfig): Promise<PullRequest[]> => {
     return await octokit.request('GET /repos/{owner}/{repo}/pulls', {

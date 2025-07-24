@@ -1,9 +1,9 @@
-import {User} from "../github.api.ts";
+import {Review} from "../github.api.ts";
 import {Avatar, Badge, Tooltip} from "antd";
 import {PropsWithChildren, ReactNode} from "react";
 
 interface Props {
-    user: User
+    user: Review['user'];
     badge?: ReactNode
 }
 
