@@ -14,7 +14,8 @@ function OrganizationsComponent() {
         <Typography.Title level={2}>Team Repos</Typography.Title>
         {teamHierarchy.map((organization) =>
             <OrganizationComponent key={organization.id}
-                                   data={organization}/>)}
+                                   data={organization}
+                                   showAheadCount={true}/>)}
         <Typography.Title level={2}>Global Repos</Typography.Title>
         {globalHierarchy.map((organization) =>
             <OrganizationComponent key={organization.id}

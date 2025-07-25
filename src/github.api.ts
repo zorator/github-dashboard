@@ -123,6 +123,32 @@ const getOrganizations = async (): Promise<OrganizationListItem[]> => {
     }).then(res => res.data)
 }
 
+export type ReleaseInfo = {
+    tagName: string,
+    aheadCount: number
+}
+const getReleaseInfo = async (organizationId: OrganizationId, repoConfig: RepositoryConfig): Promise<ReleaseInfo> => {
+    const latestRelease = await octokit.request('GET /repos/{owner}/{repo}/releases/latest', {
+        owner: organizationId,
+        repo: repoConfig.id,
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        }
+    }).then(res => res.data)
+    return await octokit.request('GET /repos/{owner}/{repo}/compare/{base}...{head}', {
+        owner: organizationId,
+        repo: repoConfig.id,
+        base: latestRelease.tag_name,
+        head: 'main',
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        }
+    }).then(res => ({
+        tagName: latestRelease.tag_name,
+        aheadCount: res.data.ahead_by
+    }))
+}
+
 export interface OrganizationConfig {
     id: OrganizationId,
     repositories: RepositoryConfig[]
@@ -137,5 +163,6 @@ export default {
     getOrganizations,
     getPullRequests,
     getBuildStatus,
-    getReviews
+    getReviews,
+    getReleaseInfo
 }
