@@ -23,7 +23,9 @@ function PullRequestStatusComponent({pullRequest}: Props) {
     return <>
         {pullRequest.draft ? <Tag>Draft</Tag> : null}
         <StatusTagComponent status={status}><BranchesOutlined/></StatusTagComponent>
-        {(reviews || []).map(review => <ReviewTagComponent key={review.id} review={review}/>)}
+        {reviews?.map(review =>
+            <ReviewTagComponent key={review.id} review={review}/>
+        )}
     </>
 }
 

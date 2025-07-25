@@ -81,7 +81,7 @@ const findByFieldValueIncludedIn = <T, S>(objects: T[], key: keyof T, values: S[
     return objects.find(object => values.includes(object[key] as S))
 }
 
-const getReviews = async (pullRequest: PullRequest): Promise<Reviews> => {
+const _getReviews = async (pullRequest: PullRequest): Promise<Reviews> => {
     return await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews', {
         owner: pullRequest.base.repo.owner.login,
         repo: pullRequest.base.repo.name,
@@ -90,6 +90,29 @@ const getReviews = async (pullRequest: PullRequest): Promise<Reviews> => {
             'X-GitHub-Api-Version': '2022-11-28'
         }
     }).then(res => res.data)
+}
+
+const getReviews = async (pullRequest: PullRequest): Promise<Reviews> => {
+    return _getReviews(pullRequest)
+        // group by user
+        .then(data => data
+            .reduce((group: Record<string, Reviews>, review) => {
+                const key = (review.user?.id.toString() || '')
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                group[key] = group[key] || [];
+                group[key].push(review);
+                return group;
+            }, {})
+        )
+        // one per user with state weight
+        .then(groupedReviews =>
+            Object.values(groupedReviews)
+                .flatMap(reviews => {
+                    const states = ["APPROVED", "CHANGES_REQUESTED", "COMMENTED", "PENDING", "DISMISSED"]
+                    reviews.sort((a, b) => states.indexOf(a.state) - states.indexOf(b.state))
+                    return reviews[0];
+                })
+        )
 }
 
 const getOrganizations = async (): Promise<OrganizationListItem[]> => {
