@@ -8,7 +8,7 @@ interface Props {
 
 export function FilterUserComponent({value, onChange}: Props) {
 
-    return <Form.Item label="Filter PullRequest by users">
+    return <Form.Item label="Filter PullRequest by users" layout="vertical">
         <Select filterOption={false}
                 mode="tags"
                 value={value}

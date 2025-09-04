@@ -7,7 +7,7 @@ interface Props {
 }
 
 export function FilterRepositoryComponent({value, onChange}: Props) {
-    return <Form.Item label="Repositories">
+    return <Form.Item label="Repositories" layout="vertical">
         <Select filterOption={false}
                 mode="tags"
                 value={value}
