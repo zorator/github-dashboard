@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "npm run codegen && vite",
+    "build": "tsc -b && npm run codegen && && vite build",
     "lint": "eslint .",
+    "codegen": "graphql-codegen --config codegen.yml",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -20,6 +21,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
+    "@graphql-codegen/cli": "^6.0.0",
+    "@graphql-codegen/typescript": "^5.0.0",
+    "@graphql-codegen/typescript-operations": "^5.0.0",
     "@octokit/types": "^14.1.0",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",

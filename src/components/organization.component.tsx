@@ -1,5 +1,5 @@
 import RepositoryComponent from "./repository.component.tsx";
-import {OrganizationConfig} from "../github.api.ts";
+import {OrganizationConfig} from "../domain.ts";
 
 interface Props {
     data: OrganizationConfig

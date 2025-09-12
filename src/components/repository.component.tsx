@@ -1,7 +1,8 @@
-import GithubApi, {OrganizationId, RepositoryConfig} from "../github.api.ts";
+import {OrganizationId, RepositoryConfig} from "../domain.ts";
 import PullRequestComponent from "./pull-request.component.tsx";
 import {usePromise} from "../hooks/promise.hook.ts";
 import ReleaseStateComponent from "./release-state.component.tsx";
+import GithubGraphql from "../github.graphql.ts";
 
 interface Props {
     organizationId: OrganizationId
@@ -11,8 +12,8 @@ interface Props {
 
 function RepositoryComponent({repositoryConfig, organizationId, showAheadCount}: Props) {
 
-    const {result: prs, status} = usePromise(
-        () => GithubApi.getPullRequests(organizationId, repositoryConfig),
+    const {result: repoData, status: status} = usePromise(
+        () => GithubGraphql.getRepositoryData(organizationId, repositoryConfig),
         [repositoryConfig, organizationId]
     )
 
@@ -20,13 +21,15 @@ function RepositoryComponent({repositoryConfig, organizationId, showAheadCount}:
         <h3>{repositoryConfig.id}&nbsp;<a href={`https://github.com/${organizationId}/${repositoryConfig.id}/pulls`}
                                           target="_blank"
                                           rel="noreferrer">🌐</a>
-            {showAheadCount ? <>&nbsp;<ReleaseStateComponent organizationId={organizationId}
-                                                                   repositoryConfig={repositoryConfig}/></> : null}
+            {showAheadCount && repoData?.latestRelease ? <>&nbsp;<ReleaseStateComponent organizationId={organizationId}
+                                                                                        repositoryConfig={repositoryConfig}
+                                                                                        release={repoData.latestRelease}
+            /></> : null}
         </h3>
         {
             status === "loading"
                 ? "Chargement en cours"
-                : (prs || []).map((pr) =>
+                : (repoData?.pullRequests || []).map((pr) =>
                     <PullRequestComponent pullRequest={pr} key={pr.id}/>)
         }
     </div>

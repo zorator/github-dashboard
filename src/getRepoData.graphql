@@ -1,0 +1,46 @@
+query GetRepoData($owner: String!, $repoName: String!) {
+    repository(owner: $owner, name: $repoName) {
+        pullRequests(first: 100, states: OPEN) {
+            nodes {
+                id
+                isDraft
+                title
+                number
+                url
+                author {
+                    login,
+                    avatarUrl
+                }
+                headRefName
+                commits(last: 1) {
+                    nodes {
+                        commit {
+                            statusCheckRollup {
+                                state
+                            }
+                        }
+                    }
+                }
+                reviews(first: 100) {
+                    nodes {
+                        id
+                        author {
+                            login,
+                            avatarUrl
+                        }
+                        state
+                    }
+                }
+            }
+        }
+        latestRelease {
+            tagName
+            url
+            tag {
+                compare(headRef: "main") {
+                    aheadBy
+                }
+            }
+        }
+    }
+}

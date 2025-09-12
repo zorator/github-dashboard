@@ -1,4 +1,4 @@
-import {RepositoryId} from "../github.api.ts";
+import {RepositoryId} from "../domain.ts";
 import {Form, Select} from "antd";
 
 interface Props {

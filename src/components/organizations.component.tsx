@@ -1,7 +1,7 @@
 import {OrganizationComponent} from "./organization.component.tsx";
 import {FilterConfig, useFilterConfig} from "../hooks/filter-config.hook.ts";
 import {Typography} from "antd";
-import {OrganizationConfig, RepositoryConfig, RepositoryId} from "../github.api.ts";
+import {OrganizationConfig, RepositoryConfig, RepositoryId} from "../domain.ts";
 import {useMemo} from "react";
 
 function OrganizationsComponent() {

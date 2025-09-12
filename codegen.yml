@@ -1,0 +1,19 @@
+# codegen.yml
+schema:
+  #- https://api.github.com/graphql
+  - ./schema.docs.graphql
+  # You can also use a local schema file: ./schema.graphql
+
+documents:
+  - 'src/**/*.graphql' # or `src/**/*.js`
+  # This tells the generator where to find your GraphQL queries
+
+generates:
+  ./src/generated/types.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      # Optional: Add a comment header to the generated file
+      # for clarity
+      preResolveTypes: true

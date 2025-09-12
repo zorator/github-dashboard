@@ -1,4 +1,5 @@
-import GithubApi, {OrganizationId, OrganizationListItem, RepositoryId} from "../github.api.ts";
+import GithubApi, {OrganizationListItem} from "../github.api.ts";
+import {OrganizationId, RepositoryId} from "../domain.ts";
 import {Divider, Skeleton, Typography} from "antd";
 import {usePromise} from "../hooks/promise.hook.ts";
 import {FilterRepositoryComponent} from "./filter-repository.component.tsx";

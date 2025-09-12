@@ -1,15 +1,15 @@
-import {Review} from "../github.api.ts";
 import {Avatar, Badge, Tooltip} from "antd";
 import {PropsWithChildren, ReactNode} from "react";
+import {Author} from "../domain.ts";
 
 interface Props {
-    user: Review['user'];
+    user: Author;
     badge?: ReactNode
 }
 
 function UserAvatarComponent({user, badge}: PropsWithChildren<Props>) {
-    const avatarNode = <Tooltip title={user?.login} placement="top">
-        <Avatar src={user?.avatar_url} />
+    const avatarNode = <Tooltip title={user.login} placement="top">
+        <Avatar src={user.avatarUrl}/>
     </Tooltip>
 
     if (badge) {
