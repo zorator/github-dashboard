@@ -11,7 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.6.1",
+    "@ant-design/icons": "^6.1.0",
     "@octokit/core": "^7.0.5",
     "@uidotdev/usehooks": "^2.4.1",
     "antd": "^5.27.4",
