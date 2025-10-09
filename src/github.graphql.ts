@@ -7,6 +7,7 @@ import {
     GithubRepositoryData,
     OrganizationId,
     PullRequest,
+    Release,
     RepositoryConfig,
     Review,
     ReviewState
@@ -29,16 +30,26 @@ export const getRepositoryData = async (organizationId: OrganizationId, repoConf
         owner: organizationId,
         repoName: repoConfig.id,
     });
+    return {
+        pullRequests: extractPullRequests(response, repoConfig),
+        latestRelease: extractLatestRelease(response),
+        // minus one to remove main branch
+        branchCount: (response.repository?.refs?.totalCount || 1) - 1
+    };
+};
 
-    if (!response.repository || !response.repository.pullRequests.nodes) {
-        return {
-            pullRequests: [],
-            latestRelease: null
-        }
-    }
+const extractLatestRelease = (response: GetRepoDataQuery): Release | null => {
+    const latestRelease = response.repository?.latestRelease;
+    return latestRelease ? {
+        tagName: latestRelease.tagName,
+        url: latestRelease.url,
+        aheadCount: latestRelease.tag?.compare?.aheadBy || 0
+    } : null
+}
 
-    // Process the data as before, but with a single response object
-    const pullRequests: PullRequest[] = response.repository.pullRequests.nodes
+const extractPullRequests = (response: GetRepoDataQuery, repoConfig: RepositoryConfig): PullRequest[] => {
+    const nodes = response.repository?.pullRequests?.nodes || [];
+    return nodes
         .filter(isNotNullish)
         .filter(pr => {
             // Apply the user login filter
@@ -58,16 +69,7 @@ export const getRepositoryData = async (organizationId: OrganizationId, repoConf
                 reviews: processReviews((pr.reviews?.nodes || []) as PullRequestReview[]),
             } as PullRequest;
         });
-
-    return {
-        pullRequests: pullRequests,
-        latestRelease: response.repository?.latestRelease ? {
-            tagName: response.repository.latestRelease.tagName,
-            url: response.repository.latestRelease.url,
-            aheadCount: response.repository.latestRelease.tag?.compare?.aheadBy || 0
-        } : null
-    };
-};
+}
 
 const toAuthor = (author: Actor): Author => {
     return {

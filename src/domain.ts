@@ -36,6 +36,7 @@ export interface PullRequest {
 export interface GithubRepositoryData {
     latestRelease: Release | null,
     pullRequests: PullRequest[]
+    branchCount: number
 }
 
 export interface OrganizationConfig {

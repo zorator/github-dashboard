@@ -1,5 +1,8 @@
 query GetRepoData($owner: String!, $repoName: String!) {
     repository(owner: $owner, name: $repoName) {
+        refs(refPrefix: "refs/heads/", first: 1) {
+            totalCount
+        }
         pullRequests(first: 100, states: OPEN) {
             nodes {
                 id

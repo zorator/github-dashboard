@@ -3,14 +3,15 @@ import PullRequestComponent from "./pull-request.component.tsx";
 import {usePromise} from "../hooks/promise.hook.ts";
 import ReleaseStateComponent from "./release-state.component.tsx";
 import GithubGraphql from "../github.graphql.ts";
+import BranchesStateComponent from "./branches-state.component.tsx";
 
 interface Props {
     organizationId: OrganizationId
     repositoryConfig: RepositoryConfig
-    showAheadCount?: boolean
+    showIndicators?: boolean
 }
 
-function RepositoryComponent({repositoryConfig, organizationId, showAheadCount}: Props) {
+function RepositoryComponent({repositoryConfig, organizationId, showIndicators}: Props) {
 
     const {result: repoData, status: status} = usePromise(
         () => GithubGraphql.getRepositoryData(organizationId, repositoryConfig),
@@ -20,11 +21,16 @@ function RepositoryComponent({repositoryConfig, organizationId, showAheadCount}:
     return <div>
         <h3>{repositoryConfig.id}&nbsp;<a href={`https://github.com/${organizationId}/${repositoryConfig.id}/pulls`}
                                           target="_blank"
-                                          rel="noreferrer">🌐</a>
-            {showAheadCount && repoData?.latestRelease ? <>&nbsp;<ReleaseStateComponent organizationId={organizationId}
-                                                                                        repositoryConfig={repositoryConfig}
-                                                                                        release={repoData.latestRelease}
-            /></> : null}
+                                          rel="noreferrer">🌐</a>&nbsp;
+            {showIndicators && repoData?.latestRelease ? <ReleaseStateComponent organizationId={organizationId}
+                                                                                repositoryConfig={repositoryConfig}
+                                                                                release={repoData.latestRelease}
+            /> : null}
+            {showIndicators && repoData?.branchCount ? <BranchesStateComponent organizationId={organizationId}
+                                                                               repositoryConfig={repositoryConfig}
+                                                                               pullRequestCount={repoData.pullRequests.length}
+                                                                               branchCount={repoData.branchCount}
+            /> : null}
         </h3>
         {
             status === "loading"

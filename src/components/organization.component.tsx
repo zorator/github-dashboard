@@ -3,17 +3,17 @@ import {OrganizationConfig} from "../domain.ts";
 
 interface Props {
     data: OrganizationConfig
-    showAheadCount?: boolean
+    showIndicators?: boolean
 }
 
-export function OrganizationComponent({data, showAheadCount}: Props) {
+export function OrganizationComponent({data, showIndicators}: Props) {
 
     return <div>
         <h2>{data.id}</h2>
         {data.repositories.map((repository) =>
             <RepositoryComponent key={repository.id}
                                  repositoryConfig={repository}
-                                 showAheadCount={showAheadCount}
+                                 showIndicators={showIndicators}
                                  organizationId={data.id}/>)}
     </div>
 }
