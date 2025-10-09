@@ -1,6 +1,6 @@
-import {OrganizationId, RepositoryId, UserLogin} from "../github.api.ts";
 // using localStoragehook from another lib than usehook-ts as it is buggy
 import { useLocalStorage } from "@uidotdev/usehooks";
+import {OrganizationId, RepositoryId, UserLogin} from "../domain.ts";
 
 export type FilterConfig = Record<OrganizationId, FilterRepositoryConfig>
 
