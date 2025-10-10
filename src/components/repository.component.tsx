@@ -8,10 +8,9 @@ import BranchesStateComponent from "./branches-state.component.tsx";
 interface Props {
     organizationId: OrganizationId
     repositoryConfig: RepositoryConfig
-    showIndicators?: boolean
 }
 
-function RepositoryComponent({repositoryConfig, organizationId, showIndicators}: Props) {
+function RepositoryComponent({repositoryConfig, organizationId}: Props) {
 
     const {result: repoData, status: status} = usePromise(
         () => GithubGraphql.getRepositoryData(organizationId, repositoryConfig),
@@ -22,14 +21,16 @@ function RepositoryComponent({repositoryConfig, organizationId, showIndicators}:
         <h3>{repositoryConfig.id}&nbsp;<a href={`https://github.com/${organizationId}/${repositoryConfig.id}/pulls`}
                                           target="_blank"
                                           rel="noreferrer">🌐</a>&nbsp;
-            {showIndicators && repoData?.latestRelease ? <ReleaseStateComponent organizationId={organizationId}
-                                                                                repositoryConfig={repositoryConfig}
-                                                                                release={repoData.latestRelease}
+            {repositoryConfig.showIndicators && repoData?.latestRelease ?
+                <ReleaseStateComponent organizationId={organizationId}
+                                       repositoryConfig={repositoryConfig}
+                                       release={repoData.latestRelease}
             /> : null}
-            {showIndicators && repoData?.branchCount ? <BranchesStateComponent organizationId={organizationId}
-                                                                               repositoryConfig={repositoryConfig}
-                                                                               pullRequestCount={repoData.pullRequests.length}
-                                                                               branchCount={repoData.branchCount}
+            {repositoryConfig.showIndicators && repoData ?
+                <BranchesStateComponent organizationId={organizationId}
+                                        repositoryConfig={repositoryConfig}
+                                        pullRequestCount={repoData.pullRequests.length}
+                                        branchCount={repoData.branchCount}
             /> : null}
         </h3>
         {

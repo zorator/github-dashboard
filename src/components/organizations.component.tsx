@@ -7,15 +7,14 @@ import {useMemo} from "react";
 function OrganizationsComponent() {
 
     const {teamConfig, globalConfig} = useFilterConfig()
-    const teamHierarchy = useMemo(() => convertToOrganizationConfig(teamConfig), [teamConfig]);
-    const globalHierarchy = useMemo(() => convertToOrganizationConfig(globalConfig), [globalConfig]);
+    const teamHierarchy = useMemo(() => convertToOrganizationConfig(teamConfig, true), [teamConfig]);
+    const globalHierarchy = useMemo(() => convertToOrganizationConfig(globalConfig, false), [globalConfig]);
 
     return <>
         <Typography.Title level={2}>Team Repos</Typography.Title>
         {teamHierarchy.map((organization) =>
             <OrganizationComponent key={organization.id}
-                                   data={organization}
-                                   showIndicators={true}/>)}
+                                   data={organization}/>)}
         <Typography.Title level={2}>Global Repos</Typography.Title>
         {globalHierarchy.map((organization) =>
             <OrganizationComponent key={organization.id}
@@ -26,13 +25,13 @@ function OrganizationsComponent() {
 export default OrganizationsComponent
 
 
-const convertToOrganizationConfig = (config: FilterConfig): OrganizationConfig[] => {
+const convertToOrganizationConfig = (config: FilterConfig, showIndicators: boolean): OrganizationConfig[] => {
     return Object.entries(config)
         .map(([orgId, repoConfig]): OrganizationConfig => ({
             id: orgId,
             repositories: repoConfig.repositoryIds
                 .map((repoId: RepositoryId): RepositoryConfig => ({
-                    id: repoId, logins: repoConfig.userLogins
+                    id: repoId, logins: repoConfig.userLogins, showIndicators
                 })).sort(sortById)
         })).sort(sortById)
 }

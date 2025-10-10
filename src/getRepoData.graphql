@@ -1,9 +1,9 @@
-query GetRepoData($owner: String!, $repoName: String!) {
+query GetRepoData($owner: String!, $repoName: String!, $withIndicators: Boolean!) {
     repository(owner: $owner, name: $repoName) {
-        refs(refPrefix: "refs/heads/", first: 1) {
+        refs(refPrefix: "refs/heads/", first: 1) @include(if: $withIndicators) {
             totalCount
         }
-        pullRequests(first: 100, states: OPEN) {
+        pullRequests(first: 50, states: OPEN) {
             nodes {
                 id
                 isDraft
@@ -14,7 +14,6 @@ query GetRepoData($owner: String!, $repoName: String!) {
                     login,
                     avatarUrl
                 }
-                headRefName
                 commits(last: 1) {
                     nodes {
                         commit {
@@ -36,12 +35,17 @@ query GetRepoData($owner: String!, $repoName: String!) {
                 }
             }
         }
-        latestRelease {
+        latestRelease @include(if: $withIndicators) {
             tagName
             url
             tag {
                 compare(headRef: "main") {
                     aheadBy
+                    commits(first: 50) {
+                        nodes {
+                            message
+                        }
+                    }
                 }
             }
         }

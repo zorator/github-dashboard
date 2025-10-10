@@ -47,4 +47,5 @@ export interface OrganizationConfig {
 export interface RepositoryConfig {
     id: RepositoryId,
     logins?: UserLogin[]
+    showIndicators: boolean
 }

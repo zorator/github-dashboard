@@ -29,6 +29,7 @@ export const getRepositoryData = async (organizationId: OrganizationId, repoConf
     const response: GetRepoDataQuery = await octokitGraphql(GetRepoData, {
         owner: organizationId,
         repoName: repoConfig.id,
+        withIndicators: repoConfig.showIndicators
     });
     return {
         pullRequests: extractPullRequests(response, repoConfig),
@@ -40,10 +41,15 @@ export const getRepositoryData = async (organizationId: OrganizationId, repoConf
 
 const extractLatestRelease = (response: GetRepoDataQuery): Release | null => {
     const latestRelease = response.repository?.latestRelease;
+    const commits = latestRelease?.tag?.compare?.commits.nodes || [];
+    const skipCiPrefixes = ["[skip ci]", "[skip-ci]"];
+    const businessCommits = commits
+        .filter(isNotNullish)
+        .filter(commit => !skipCiPrefixes.some(prefix => commit.message.toLowerCase().startsWith(prefix)))
     return latestRelease ? {
         tagName: latestRelease.tagName,
         url: latestRelease.url,
-        aheadCount: latestRelease.tag?.compare?.aheadBy || 0
+        aheadCount: businessCommits.length,
     } : null
 }
 
