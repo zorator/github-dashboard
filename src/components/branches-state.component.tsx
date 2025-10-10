@@ -12,12 +12,12 @@ function BranchesStateComponent({repositoryConfig, organizationId, branchCount, 
     // minus one because of primary branch
     const branchDiff = branchCount - pullRequestCount;
     const tagColor = branchDiff > 10 ? "error" : branchDiff > 2 ? "warning" : "default"
-    return <a
+    return branchDiff > 0 ? <a
         href={`https://github.com/${organizationId}/${repositoryConfig.id}/branches/all`}
         target="_blank"
         rel="noreferrer">
-        <Tag color={tagColor}>{branchCount} branches</Tag>
-    </a>
+        <Tag color={tagColor}>{branchDiff} branch{branchDiff > 1 ? 'es' : ''} without PR</Tag>
+    </a> : null;
 }
 
 
