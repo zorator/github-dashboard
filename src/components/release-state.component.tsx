@@ -13,7 +13,7 @@ function ReleaseStateComponent({repositoryConfig, organizationId, release}: Prop
     return <>
         <a href={release.url} target="_blank" rel="noreferrer"><Tag icon={<TagOutlined/>}>{version}</Tag></a>
         {release.aheadCount ?
-            <a href={`https://github.com/${organizationId}/${repositoryConfig.id}/blob/main/CHANGELOG.md`}
+            <a href={`https://github.com/${organizationId}/${repositoryConfig.id}/compare/${release.tagName}...main`}
                target="_blank" rel="noreferrer">
                 <Tag>{release.aheadCount} commits unreleased</Tag>
             </a> : null}
