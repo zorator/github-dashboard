@@ -8,7 +8,6 @@ query GetRepoData($owner: String!, $repoName: String!, $withIndicators: Boolean!
                 id
                 isDraft
                 title
-                number
                 url
                 author {
                     login,
