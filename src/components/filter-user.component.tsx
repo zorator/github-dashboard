@@ -1,20 +1,18 @@
 import {UserLogin} from "../domain.ts";
-import {Form, Select} from "antd";
+import {Form} from "antd";
+import {InputTags} from "./input-tags.component.tsx";
 
 interface Props {
-    value: UserLogin[] | undefined
-    onChange: (logins: UserLogin[]) => void
+    userLogins: UserLogin[]
+    onChange: (userLogins: UserLogin[]) => void
 }
 
-export function FilterUserComponent({value, onChange}: Props) {
-
-    return <Form.Item label="Filter PullRequest by users" layout="vertical">
-        <Select filterOption={false}
-                mode="tags"
-                value={value}
-                placeholder="Enter users"
-                onChange={onChange}
-                style={{width: '100%'}}
+export function FilterUserComponent({userLogins, onChange}: Props) {
+    return <Form.Item label="Repositories" layout="vertical">
+        <InputTags
+            placeholder="Enter users"
+            values={userLogins}
+            onChange={onChange}
         />
     </Form.Item>
 }

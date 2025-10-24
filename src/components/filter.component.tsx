@@ -55,12 +55,12 @@ function AbstractFilterComponent({value, setValue, showUserLogins, organizations
                 <React.Fragment key={organization.id}>
                     <Divider orientation="left">{organization.login}</Divider>
                     {showUserLogins
-                        ? <FilterUserComponent value={repoFilter.userLogins}
+                        ? <FilterUserComponent userLogins={repoFilter.userLogins || []}
                                                onChange={(userLogins) => {
                                                    onOrganizationFilterChange(organization.login, repoFilter.repositoryIds, userLogins);
                                                }}/>
                         : null}
-                    <FilterRepositoryComponent value={repoFilter.repositoryIds}
+                    <FilterRepositoryComponent repositoryIds={repoFilter.repositoryIds}
                                                onChange={(newRepoIds) => {
                                                    onOrganizationFilterChange(organization.login, newRepoIds, repoFilter.userLogins);
                                                }}/>

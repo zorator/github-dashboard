@@ -1,19 +1,18 @@
 import {RepositoryId} from "../domain.ts";
-import {Form, Select} from "antd";
+import {Form} from "antd";
+import {InputTags} from "./input-tags.component.tsx";
 
 interface Props {
-    value: RepositoryId[]
-    onChange: (repoIds: RepositoryId[]) => void
+    repositoryIds: RepositoryId[]
+    onChange: (repositoryIds: RepositoryId[]) => void
 }
 
-export function FilterRepositoryComponent({value, onChange}: Props) {
+export function FilterRepositoryComponent({repositoryIds, onChange}: Props) {
     return <Form.Item label="Repositories" layout="vertical">
-        <Select filterOption={false}
-                mode="tags"
-                value={value}
-                placeholder="Select repositories"
-                onChange={onChange}
-                style={{width: '100%'}}
+        <InputTags
+            placeholder="Enter a repository id"
+            values={repositoryIds}
+            onChange={onChange}
         />
     </Form.Item>
 }
