@@ -11,7 +11,7 @@ interface Props {
 function BranchesStateComponent({repositoryConfig, organizationId, branchCount, pullRequestCount}: Props) {
     // minus one because of primary branch
     const branchDiff = branchCount - pullRequestCount;
-    const tagColor = branchDiff > 10 ? "error" : branchDiff > 2 ? "warning" : "default"
+    const tagColor = branchDiff > 10 ? "error" : "warning"
     return branchDiff > 0 ? <a
         href={`https://github.com/${organizationId}/${repositoryConfig.id}/branches/all`}
         target="_blank"
