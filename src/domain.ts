@@ -41,7 +41,8 @@ export interface GithubRepositoryData {
 
 export interface OrganizationConfig {
     id: OrganizationId,
-    repositories: RepositoryConfig[]
+    teamRepositoryIds: RepositoryConfig[]
+    globalRepositoryIds: RepositoryConfig[]
 }
 
 export interface RepositoryConfig {

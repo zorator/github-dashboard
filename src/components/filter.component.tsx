@@ -1,71 +1,54 @@
 import GithubApi, {OrganizationListItem} from "../github.api.ts";
-import {OrganizationId, RepositoryId} from "../domain.ts";
 import {Divider, Skeleton, Typography} from "antd";
 import {usePromise} from "../hooks/promise.hook.ts";
 import {FilterRepositoryComponent} from "./filter-repository.component.tsx";
-import React from "react";
-import {FilterConfig, useFilterConfig} from "../hooks/filter-config.hook.ts";
+import {FilterRepositoryConfig, useFilterConfig} from "../hooks/filter-config.hook.ts";
 import {FilterUserComponent} from "./filter-user.component.tsx";
 
 
 export function FilterComponent() {
-    const {teamConfig, setTeamConfig, globalConfig, setGlobalConfig} = useFilterConfig()
+    const {repoConfig, setRepoConfig} = useFilterConfig()
     const {status, result: organizations} = usePromise<OrganizationListItem[]>(() => GithubApi.getOrganizations());
 
-    return <div>
-        <Typography.Title level={2}>Team Projects</Typography.Title>
-        <Skeleton active={true} loading={status === 'loading'}>
-            {status === 'success'
-                ? <AbstractFilterComponent organizations={organizations}
-                                           value={teamConfig}
-                                           setValue={setTeamConfig}/>
-                : <p>Error</p>}
+    return <Skeleton active={true} loading={status === 'loading'}>
+        {status === 'success' ? organizations.map(organization =>
+            <OrganizationConfigComponent key={organization.login}
+                                         organization={organization}
+                                         value={repoConfig[organization.login]}
+                                         setValue={newConfig => {
+                                             setRepoConfig({
+                                                     ...repoConfig,
+                                                     [organization.login]: newConfig
+                                                 }
+                                             )
+                                         }}/>
+        ) : <p>Error</p>}
         </Skeleton>
-
-        <Typography.Title level={2}>Global Projects</Typography.Title>
-        <Skeleton active={true} loading={status === 'loading'}>
-            {status === 'success'
-                ? <AbstractFilterComponent organizations={organizations}
-                                           showUserLogins={true}
-                                           value={globalConfig}
-                                           setValue={setGlobalConfig}/>
-                : <p>Error</p>}
-        </Skeleton>
-    </div>
 }
 
 interface AbstractProps {
-    value: FilterConfig,
-    setValue: (val: FilterConfig) => void,
-    showUserLogins?: boolean
-    organizations: OrganizationListItem[]
+    value: FilterRepositoryConfig,
+    setValue: (val: FilterRepositoryConfig) => void,
+    organization: OrganizationListItem
 }
 
-function AbstractFilterComponent({value, setValue, showUserLogins, organizations}: AbstractProps) {
+function OrganizationConfigComponent({value, setValue, organization}: AbstractProps) {
+    return <>
+        <Typography.Title level={2}>{organization.login}</Typography.Title>
+        <Divider orientation="left">Team Projects</Divider>
+        <FilterRepositoryComponent repositoryIds={value.teamRepositoryIds}
+                                   onChange={(newRepoIds) => {
+                                       setValue({...value, teamRepositoryIds: newRepoIds});
+                                   }}/>
 
-    const onOrganizationFilterChange = (organizationId: OrganizationId, repositoryIds: RepositoryId[], userLogins?: string[]): void => {
-        setValue({...value, [organizationId]: {repositoryIds, userLogins}})
-    }
-
-    return <div>
-        {organizations.map(organization => {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            const repoFilter = value[organization.login] || {repositoryIds: []}
-            return (
-                <React.Fragment key={organization.id}>
-                    <Divider orientation="left">{organization.login}</Divider>
-                    {showUserLogins
-                        ? <FilterUserComponent userLogins={repoFilter.userLogins || []}
-                                               onChange={(userLogins) => {
-                                                   onOrganizationFilterChange(organization.login, repoFilter.repositoryIds, userLogins);
-                                               }}/>
-                        : null}
-                    <FilterRepositoryComponent repositoryIds={repoFilter.repositoryIds}
-                                               onChange={(newRepoIds) => {
-                                                   onOrganizationFilterChange(organization.login, newRepoIds, repoFilter.userLogins);
-                                               }}/>
-                </React.Fragment>
-            );
-        })}
-    </div>
+        <Divider orientation="left">Global Projects</Divider>
+        <FilterUserComponent userLogins={value.userLogins || []}
+                             onChange={(userLogins) => {
+                                 setValue({...value, userLogins: userLogins});
+                             }}/>
+        <FilterRepositoryComponent repositoryIds={value.globalRepositoryIds}
+                                   onChange={(newRepoIds) => {
+                                       setValue({...value, globalRepositoryIds: newRepoIds});
+                                   }}/>
+    </>
 }
