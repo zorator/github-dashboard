@@ -37,13 +37,13 @@ interface AbstractProps {
 function OrganizationConfigComponent({value, setValue, organization}: AbstractProps) {
     return <>
         <Typography.Title level={2}>{organization.label}</Typography.Title>
-        <Divider orientation="left">Team Projects</Divider>
+        <Divider titlePlacement="left">Team Projects</Divider>
         <FilterRepositoryComponent repositoryIds={value.teamRepositoryIds}
                                    onChange={(newRepoIds) => {
                                        setValue({...value, teamRepositoryIds: newRepoIds});
                                    }}/>
 
-        <Divider orientation="left">Global Projects</Divider>
+        <Divider titlePlacement="left">Global Projects</Divider>
         <FilterUserComponent userLogins={value.userLogins || []}
                              onChange={(userLogins) => {
                                  setValue({...value, userLogins: userLogins});

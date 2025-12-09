@@ -14,6 +14,9 @@ function App() {
 
     return (
         <ConfigProvider
+            tag={{
+                styles: {root: {marginInlineEnd: 4}}
+            }}
             theme={{
                 algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
             }}>

@@ -9,19 +9,19 @@ interface Props {
 
 function StatusTagComponent({status, children}: PropsWithChildren<Props>) {
     const {token} = theme.useToken();
-    const icon = useMemo(() => {
+    const {color, icon} = useMemo(() => {
         switch (status) {
             case 'success':
-                return <CheckCircleFilled style={{color: token.colorSuccess}}/>;
+                return {color: 'success', icon: <CheckCircleFilled/>};
             case 'failure':
-                return <CloseCircleFilled style={{color: token.colorError}}/>;
+                return {color: 'error', icon: <CloseCircleFilled/>};
             case 'in_progress':
-                return <LoadingOutlined/>;
+                return {color: 'processing', icon: <LoadingOutlined/>};
             default:
-                return null;
+                return {color: undefined, icon: null};
         }
     }, [status, token])
-    return <Tag icon={icon}>{children}</Tag>
+    return <Tag icon={icon} color={color}>{children}</Tag>
 }
 
 export default StatusTagComponent
