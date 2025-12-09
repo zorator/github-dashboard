@@ -1,10 +1,17 @@
 import {createContext, PropsWithChildren, useMemo, useState} from "react";
 import GithubApi from "../github.api.ts";
-import {GithubRepositoryData, Organization, OrganizationWithConfig, OrganizationId, RepositoryConfig} from "../domain.ts";
+import {
+    GithubRepositoryData,
+    Organization,
+    OrganizationId,
+    OrganizationWithConfig,
+    RepositoryConfig
+} from "../domain.ts";
 import {usePromise, UsePromiseStatus} from "../hooks/promise.hook.ts";
 import {convertToOrganizationConfig} from "../utils/utils.ts";
 import {useFilterConfig} from "../hooks/filter-config.hook.ts";
 import GithubGraphql from "../github.graphql.ts";
+import {useLocalStorage} from "@uidotdev/usehooks";
 
 interface OrganizationsContextType {
     organizations: Organization[],
@@ -28,7 +35,7 @@ export const OrganizationsContext = createContext<OrganizationsContextType>({
 });
 
 export const OrganizationsProvider = ({children}: PropsWithChildren) => {
-    const [selectedOrganization, setSelectedOrganization] = useState<OrganizationWithConfig | null>(null);
+    const [selectedOrganization, setSelectedOrganization] = useLocalStorage<OrganizationWithConfig | null>('selected-organization', null)
     const [repositoryCache, setRepositoryCache] = useState<Record<string, Promise<GithubRepositoryData> | undefined>>({})
 
     const {filterConfig} = useFilterConfig();

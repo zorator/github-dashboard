@@ -1,13 +1,18 @@
 import {Menu, MenuProps, Skeleton} from "antd";
-import {MenuInfo} from "rc-menu/lib/interface";
 import {useContext} from "react";
 import {OrganizationsContext} from "../../contexts/organizations.context.tsx";
+import {SelectInfo} from "@rc-component/menu/lib/interface";
 
 const OrganizationMenuComponent = () => {
 
-    const {organizations, organizationsLoadingStatus: status, selectOrganization} = useContext(OrganizationsContext);
+    const {
+        organizations,
+        organizationsLoadingStatus: status,
+        selectedOrganization,
+        selectOrganization
+    } = useContext(OrganizationsContext);
 
-    const onMenuSelect = (event: MenuInfo) => {
+    const onMenuSelect = (event: SelectInfo) => {
         selectOrganization(event.key)
     }
 
@@ -25,7 +30,7 @@ const OrganizationMenuComponent = () => {
     return <Menu
         theme="dark"
         mode="horizontal"
-        defaultSelectedKeys={[organizations[0].id]}
+        defaultSelectedKeys={[selectedOrganization ? selectedOrganization.id : organizations[0].id]}
         items={menuItems}
         style={{flex: 1, minWidth: 0}}
         onSelect={onMenuSelect}
