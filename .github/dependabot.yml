@@ -12,5 +12,7 @@ updates:
         update-types:
           - "patch"
           - "minor"
+    ignore:
+      - dependency-name: "@ant-design/icons"
     commit-message:
       prefix: "chore(deps): "
