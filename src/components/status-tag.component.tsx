@@ -1,6 +1,6 @@
 import {BuildStatus} from "../domain.ts";
 import {CheckCircleFilled, CloseCircleFilled, LoadingOutlined} from "@ant-design/icons";
-import {Tag, theme} from "antd";
+import {Tag} from "antd";
 import {PropsWithChildren, useMemo} from "react";
 
 interface Props {
@@ -8,20 +8,19 @@ interface Props {
 }
 
 function StatusTagComponent({status, children}: PropsWithChildren<Props>) {
-    const {token} = theme.useToken();
-    const {color, icon} = useMemo(() => {
+    const {className, icon} = useMemo(() => {
         switch (status) {
             case 'success':
-                return {color: 'success', icon: <CheckCircleFilled/>};
+                return {className: 'tag-with-icon-success', icon: <CheckCircleFilled/>};
             case 'failure':
-                return {color: 'error', icon: <CloseCircleFilled/>};
+                return {className: 'tag-with-icon-error', icon: <CloseCircleFilled/>};
             case 'in_progress':
-                return {color: 'processing', icon: <LoadingOutlined/>};
+                return {className: 'processing', icon: <LoadingOutlined/>};
             default:
-                return {color: undefined, icon: null};
+                return {className: undefined, icon: null};
         }
-    }, [status, token])
-    return <Tag icon={icon} color={color}>{children}</Tag>
+    }, [status])
+    return <Tag icon={icon} className={className}>{children}</Tag>
 }
 
 export default StatusTagComponent

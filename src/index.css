@@ -26,3 +26,10 @@ code {
     margin: 16px;
     border-radius: 6px
 }
+
+.tag-with-icon-success > span[role='img'] {
+    color: #49aa19;
+}
+.tag-with-icon-error > span[role='img'] {
+    color: #dc4446;
+}
