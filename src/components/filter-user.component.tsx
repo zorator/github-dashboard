@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function FilterUserComponent({userLogins, onChange}: Props) {
-    return <Form.Item label="Repositories" layout="vertical">
+    return <Form.Item label="Users" layout="vertical">
         <InputTags
             placeholder="Enter users"
             values={userLogins}

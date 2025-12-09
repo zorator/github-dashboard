@@ -1,6 +1,7 @@
 import {DependencyList, useEffect, useState} from "react";
 
-type UsePromiseReturn<T> = {
+export type UsePromiseStatus = 'success' | 'error' | 'loading'
+export type UsePromiseReturn<T> = {
     result?: undefined
     status: 'error' | 'loading'
 } | {

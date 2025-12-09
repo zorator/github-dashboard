@@ -13,6 +13,7 @@ import {
     ReviewState
 } from "./domain.ts";
 import {Actor, GetRepoDataQuery, PullRequestCommit, PullRequestReview, StatusState} from "./generated/types.ts";
+import {isNotNullish} from "./utils/utils.ts";
 
 const octokitGraphql = graphql.defaults({
     headers: {
@@ -20,9 +21,6 @@ const octokitGraphql = graphql.defaults({
         authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     }
 });
-
-const isNotNullish = <T>(value: T | null | undefined): value is T =>
-    value !== undefined && value !== null
 
 // New function to fetch all data with a single GraphQL query
 export const getRepositoryData = async (organizationId: OrganizationId, repoConfig: RepositoryConfig): Promise<GithubRepositoryData> => {

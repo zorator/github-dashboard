@@ -2,8 +2,9 @@ import {OrganizationId, RepositoryConfig} from "../domain.ts";
 import PullRequestComponent from "./pull-request.component.tsx";
 import {usePromise} from "../hooks/promise.hook.ts";
 import ReleaseStateComponent from "./release-state.component.tsx";
-import GithubGraphql from "../github.graphql.ts";
 import BranchesStateComponent from "./branches-state.component.tsx";
+import {useContext} from "react";
+import {OrganizationsContext} from "../contexts/organizations.context.tsx";
 
 interface Props {
     organizationId: OrganizationId
@@ -12,9 +13,10 @@ interface Props {
 
 function RepositoryComponent({repositoryConfig, organizationId}: Props) {
 
+    const {fetchRepository} = useContext(OrganizationsContext)
     const {result: repoData, status: status} = usePromise(
-        () => GithubGraphql.getRepositoryData(organizationId, repositoryConfig),
-        [repositoryConfig, organizationId]
+        () => fetchRepository(organizationId, repositoryConfig),
+        [organizationId, repositoryConfig]
     )
 
     return <div>

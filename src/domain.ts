@@ -33,14 +33,18 @@ export interface PullRequest {
     reviews: Review[]
 }
 
+export interface Organization {
+    id: OrganizationId
+    label: string
+}
+
 export interface GithubRepositoryData {
     latestRelease: Release | null,
     pullRequests: PullRequest[]
     branchCount: number
 }
 
-export interface OrganizationConfig {
-    id: OrganizationId,
+export interface OrganizationWithConfig extends Organization {
     teamRepositoryIds: RepositoryConfig[]
     globalRepositoryIds: RepositoryConfig[]
 }

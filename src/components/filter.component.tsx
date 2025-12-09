@@ -1,40 +1,42 @@
-import GithubApi, {OrganizationListItem} from "../github.api.ts";
-import {Divider, Skeleton, Typography} from "antd";
-import {usePromise} from "../hooks/promise.hook.ts";
+import {Divider, Typography} from "antd";
 import {FilterRepositoryComponent} from "./filter-repository.component.tsx";
-import {FilterRepositoryConfig, useFilterConfig} from "../hooks/filter-config.hook.ts";
+import {OrganizationConfig, useFilterConfig} from "../hooks/filter-config.hook.ts";
 import {FilterUserComponent} from "./filter-user.component.tsx";
+import {useContext} from "react";
+import {OrganizationsContext} from "../contexts/organizations.context.tsx";
+import {Organization} from "../domain.ts";
 
 
 export function FilterComponent() {
-    const {repoConfig, setRepoConfig} = useFilterConfig()
-    const {status, result: organizations} = usePromise<OrganizationListItem[]>(() => GithubApi.getOrganizations());
+    const {filterConfig, setFilterConfig} = useFilterConfig()
+    const {selectedOrganization} = useContext(OrganizationsContext)
 
-    return <Skeleton active={true} loading={status === 'loading'}>
-        {status === 'success' ? organizations.map(organization =>
-            <OrganizationConfigComponent key={organization.login}
-                                         organization={organization}
-                                         value={repoConfig[organization.login]}
-                                         setValue={newConfig => {
-                                             setRepoConfig({
-                                                     ...repoConfig,
-                                                     [organization.login]: newConfig
-                                                 }
-                                             )
-                                         }}/>
-        ) : <p>Error</p>}
-        </Skeleton>
+    return selectedOrganization
+        ? <OrganizationConfigComponent key={selectedOrganization.id}
+                                       organization={selectedOrganization}
+                                       value={filterConfig[selectedOrganization.id] || {
+                                           teamRepositoryIds: [],
+                                           globalRepositoryIds: []
+                                       }}
+                                       setValue={newConfig => {
+                                           setFilterConfig({
+                                                   ...filterConfig,
+                                                   [selectedOrganization.id]: newConfig
+                                               }
+                                           )
+                                       }}/>
+        : <p>Error</p>
 }
 
 interface AbstractProps {
-    value: FilterRepositoryConfig,
-    setValue: (val: FilterRepositoryConfig) => void,
-    organization: OrganizationListItem
+    value: OrganizationConfig,
+    setValue: (val: OrganizationConfig) => void,
+    organization: Organization
 }
 
 function OrganizationConfigComponent({value, setValue, organization}: AbstractProps) {
     return <>
-        <Typography.Title level={2}>{organization.login}</Typography.Title>
+        <Typography.Title level={2}>{organization.label}</Typography.Title>
         <Divider orientation="left">Team Projects</Divider>
         <FilterRepositoryComponent repositoryIds={value.teamRepositoryIds}
                                    onChange={(newRepoIds) => {

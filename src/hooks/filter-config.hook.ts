@@ -2,24 +2,24 @@
 import {useLocalStorage} from "@uidotdev/usehooks";
 import {OrganizationId, RepositoryId, UserLogin} from "../domain.ts";
 
-export type OldFilterConfig = Record<OrganizationId, OldFilterRepositoryConfig>
+export type OldFilterConfig = Record<OrganizationId, OldOrganizationConfig>
 
-export interface OldFilterRepositoryConfig {
+export interface OldOrganizationConfig {
     repositoryIds: RepositoryId[],
     userLogins?: UserLogin[]
 }
 
-export interface FilterRepositoryConfig {
+export interface OrganizationConfig {
     teamRepositoryIds: RepositoryId[],
     globalRepositoryIds: RepositoryId[],
     userLogins?: UserLogin[]
 }
 
-export type FilterConfig = Record<OrganizationId, FilterRepositoryConfig>
+export type FilterConfig = Record<OrganizationId, OrganizationConfig | undefined>
 
 type UseConfigReturn = {
-    repoConfig: FilterConfig
-    setRepoConfig: (config: FilterConfig) => void
+    filterConfig: FilterConfig
+    setFilterConfig: (config: FilterConfig) => void
 }
 
 export function useFilterConfig(): UseConfigReturn {
@@ -36,7 +36,6 @@ export function useFilterConfig(): UseConfigReturn {
         })
         Object.entries(globalConfig).forEach(([orgId, filterConf]) => {
             config[orgId] = {
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 teamRepositoryIds: config[orgId] == null ? [] : config[orgId].teamRepositoryIds,
                 globalRepositoryIds: filterConf.repositoryIds,
                 userLogins: filterConf.userLogins
@@ -45,9 +44,9 @@ export function useFilterConfig(): UseConfigReturn {
         return config;
     }
 
-    const [repoConfig, setRepoConfig] = useLocalStorage<FilterConfig>('repo-config', buildFromLegacyConfig(teamConfig, globalConfig))
+    const [filterConfig, setFilterConfig] = useLocalStorage<FilterConfig>('repo-config', buildFromLegacyConfig(teamConfig, globalConfig))
 
     return {
-        repoConfig, setRepoConfig
+        filterConfig, setFilterConfig
     }
 }

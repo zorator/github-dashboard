@@ -1,25 +1,23 @@
 import RepositoryComponent from "./repository.component.tsx";
-import {OrganizationConfig} from "../domain.ts";
 import {Typography} from "antd";
+import {OrganizationsContext} from "../contexts/organizations.context.tsx";
+import {useContext} from "react";
 
-interface Props {
-    organizationConfig: OrganizationConfig
-}
+export function OrganizationComponent() {
 
-export function OrganizationComponent({organizationConfig}: Props) {
+    const {selectedOrganization} = useContext(OrganizationsContext);
 
-    return <div>
-        <Typography.Title level={2}>{organizationConfig.id}</Typography.Title>
+    return selectedOrganization ? <div>
         <Typography.Title level={3}>Team Repos</Typography.Title>
-        {organizationConfig.teamRepositoryIds.map((repository) =>
+        {selectedOrganization.teamRepositoryIds.map((repository) =>
             <RepositoryComponent key={repository.id}
                                  repositoryConfig={repository}
-                                 organizationId={organizationConfig.id}/>)}
+                                 organizationId={selectedOrganization.id}/>)}
         <Typography.Title level={3}>Global Repos</Typography.Title>
-        {organizationConfig.globalRepositoryIds.map((repository) =>
+        {selectedOrganization.globalRepositoryIds.map((repository) =>
             <RepositoryComponent key={repository.id}
                                  repositoryConfig={repository}
-                                 organizationId={organizationConfig.id}/>)}
+                                 organizationId={selectedOrganization.id}/>)}
 
-    </div>
+    </div> : null
 }
