@@ -1,7 +1,7 @@
 import PullRequestStatusComponent from "./pull-request-status.component.tsx";
 import {Space} from "antd";
 import UserAvatarComponent from "./user-avatar.component.tsx";
-import {PullRequest} from "../domain.ts";
+import {PullRequest} from "../../domain.ts";
 
 interface Props {
     pullRequest: PullRequest

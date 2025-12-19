@@ -1,4 +1,4 @@
-import {UserLogin} from "../domain.ts";
+import {UserLogin} from "../../domain.ts";
 import {Form} from "antd";
 import {InputTags} from "./input-tags.component.tsx";
 
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function FilterUserComponent({userLogins, onChange}: Props) {
-    return <Form.Item label="Users" layout="vertical">
+    return <Form.Item label="Users">
         <InputTags
             placeholder="Enter users"
             values={userLogins}

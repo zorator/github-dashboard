@@ -8,7 +8,8 @@ import {
     OrganizationId,
     PullRequest,
     Release,
-    RepositoryConfig,
+    RepositoryGroupConfig,
+    RepositoryId,
     Review,
     ReviewState
 } from "./domain.ts";
@@ -23,14 +24,14 @@ const octokitGraphql = graphql.defaults({
 });
 
 // New function to fetch all data with a single GraphQL query
-export const getRepositoryData = async (organizationId: OrganizationId, repoConfig: RepositoryConfig): Promise<GithubRepositoryData> => {
+export const getRepositoryData = async (organizationId: OrganizationId, groupConfig: RepositoryGroupConfig, repositoryId: RepositoryId): Promise<GithubRepositoryData> => {
     const response: GetRepoDataQuery = await octokitGraphql(GetRepoData, {
         owner: organizationId,
-        repoName: repoConfig.id,
-        withIndicators: repoConfig.showIndicators
+        repoName: repositoryId,
+        withIndicators: groupConfig.showIndicators
     });
     return {
-        pullRequests: extractPullRequests(response, repoConfig),
+        pullRequests: extractPullRequests(response, groupConfig),
         latestRelease: extractLatestRelease(response),
         // minus one to remove main branch
         branchCount: (response.repository?.refs?.totalCount || 1) - 1
@@ -51,14 +52,14 @@ const extractLatestRelease = (response: GetRepoDataQuery): Release | null => {
     } : null
 }
 
-const extractPullRequests = (response: GetRepoDataQuery, repoConfig: RepositoryConfig): PullRequest[] => {
+const extractPullRequests = (response: GetRepoDataQuery, groupConfig: RepositoryGroupConfig): PullRequest[] => {
     const nodes = response.repository?.pullRequests?.nodes || [];
     return nodes
         .filter(isNotNullish)
         .filter(pr => {
             // Apply the user login filter
-            if (repoConfig.logins && pr.author) {
-                return repoConfig.logins.includes(pr.author.login);
+            if (groupConfig.logins && pr.author) {
+                return groupConfig.logins.includes(pr.author.login);
             }
             return true;
         })

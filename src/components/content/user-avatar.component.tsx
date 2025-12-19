@@ -1,6 +1,6 @@
 import {Avatar, Badge, Tooltip} from "antd";
 import {PropsWithChildren, ReactNode} from "react";
-import {Author} from "../domain.ts";
+import {Author} from "../../domain.ts";
 
 interface Props {
     user: Author;

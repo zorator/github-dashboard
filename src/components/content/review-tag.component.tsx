@@ -2,7 +2,7 @@ import {CheckCircleFilled, ClockCircleFilled, MinusCircleFilled, QuestionCircleF
 import {theme} from "antd";
 import {useMemo} from "react";
 import UserAvatarComponent from "./user-avatar.component.tsx";
-import {Review} from "../domain.ts";
+import {Review} from "../../domain.ts";
 
 interface Props {
     review: Review

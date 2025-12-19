@@ -1,36 +1,37 @@
-import {OrganizationId, RepositoryConfig} from "../domain.ts";
+import {OrganizationId, RepositoryGroupConfig, RepositoryId} from "../../domain.ts";
 import PullRequestComponent from "./pull-request.component.tsx";
-import {usePromise} from "../hooks/promise.hook.ts";
+import {usePromise} from "../../hooks/promise.hook.ts";
 import ReleaseStateComponent from "./release-state.component.tsx";
 import BranchesStateComponent from "./branches-state.component.tsx";
 import {useContext} from "react";
-import {OrganizationsContext} from "../contexts/organizations.context.tsx";
+import {OrganizationsContext} from "../../contexts/organizations.context.tsx";
 
 interface Props {
     organizationId: OrganizationId
-    repositoryConfig: RepositoryConfig
+    repositoryId: RepositoryId
+    groupConfig: RepositoryGroupConfig
 }
 
-function RepositoryComponent({repositoryConfig, organizationId}: Props) {
+function RepositoryComponent({repositoryId, groupConfig, organizationId}: Props) {
 
     const {fetchRepository} = useContext(OrganizationsContext)
     const {result: repoData, status: status} = usePromise(
-        () => fetchRepository(organizationId, repositoryConfig),
-        [organizationId, repositoryConfig]
+        () => fetchRepository(organizationId, groupConfig, repositoryId),
+        [organizationId, groupConfig, repositoryId]
     )
 
     return <div>
-        <h3>{repositoryConfig.id}&nbsp;<a href={`https://github.com/${organizationId}/${repositoryConfig.id}/pulls`}
+        <h3>{repositoryId}&nbsp;<a href={`https://github.com/${organizationId}/${repositoryId}/pulls`}
                                           target="_blank"
                                           rel="noreferrer">🌐</a>&nbsp;
-            {repositoryConfig.showIndicators && repoData?.latestRelease ?
+            {groupConfig.showIndicators && repoData?.latestRelease ?
                 <ReleaseStateComponent organizationId={organizationId}
-                                       repositoryConfig={repositoryConfig}
+                                       repositoryId={repositoryId}
                                        release={repoData.latestRelease}
             /> : null}
-            {repositoryConfig.showIndicators && repoData ?
+            {groupConfig.showIndicators && repoData ?
                 <BranchesStateComponent organizationId={organizationId}
-                                        repositoryConfig={repositoryConfig}
+                                        repositoryId={repositoryId}
                                         pullRequestCount={repoData.pullRequests.length}
                                         branchCount={repoData.branchCount}
             /> : null}

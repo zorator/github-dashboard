@@ -2,7 +2,7 @@ import {BranchesOutlined} from "@ant-design/icons";
 import {Tag} from "antd";
 import StatusTagComponent from "./status-tag.component.tsx";
 import ReviewTagComponent from "./review-tag.component.tsx";
-import {PullRequest} from "../domain.ts";
+import {PullRequest} from "../../domain.ts";
 
 interface Props {
     pullRequest: PullRequest

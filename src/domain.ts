@@ -45,12 +45,12 @@ export interface GithubRepositoryData {
 }
 
 export interface OrganizationWithConfig extends Organization {
-    teamRepositoryIds: RepositoryConfig[]
-    globalRepositoryIds: RepositoryConfig[]
+    groups: RepositoryGroupConfig[]
 }
 
-export interface RepositoryConfig {
-    id: RepositoryId,
+export interface RepositoryGroupConfig {
+    name: string,
     logins?: UserLogin[]
     showIndicators: boolean
+    repositories: RepositoryId[],
 }

@@ -1,4 +1,4 @@
-import {BuildStatus} from "../domain.ts";
+import {BuildStatus} from "../../domain.ts";
 import {CheckCircleFilled, CloseCircleFilled, LoadingOutlined} from "@ant-design/icons";
 import {Tag} from "antd";
 import {PropsWithChildren, useMemo} from "react";

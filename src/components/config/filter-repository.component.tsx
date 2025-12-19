@@ -1,4 +1,4 @@
-import {RepositoryId} from "../domain.ts";
+import {RepositoryId} from "../../domain.ts";
 import {Form} from "antd";
 import {InputTags} from "./input-tags.component.tsx";
 
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function FilterRepositoryComponent({repositoryIds, onChange}: Props) {
-    return <Form.Item label="Repositories" layout="vertical">
+    return <Form.Item label="Repositories">
         <InputTags
             placeholder="Enter a repository id"
             values={repositoryIds}

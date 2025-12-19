@@ -1,12 +1,12 @@
 import {ConfigProvider, Layout, Switch, theme} from 'antd';
 import {MoonFilled, SunFilled} from "@ant-design/icons";
 import {useDarkMode} from "usehooks-ts";
-import {FilterComponent} from "./components/filter.component.tsx";
+import {FilterComponent} from "./components/config/filter.component.tsx";
 import SiderComponent, {Screen} from "./components/nav/sider.component.tsx";
 import {useState} from "react";
 import OrganizationMenuComponent from "./components/nav/organization-menu.component.tsx";
 import {OrganizationsProvider} from "./contexts/organizations.context.tsx";
-import {OrganizationComponent} from "./components/organization.component.tsx";
+import {OrganizationComponent} from "./components/content/organization.component.tsx";
 
 function App() {
     const [selectedScreen, setSelectedScreen] = useState<Screen>('pull-requests')

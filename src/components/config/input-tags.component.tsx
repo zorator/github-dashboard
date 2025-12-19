@@ -1,4 +1,4 @@
-import {RepositoryId} from "../domain.ts";
+import {RepositoryId} from "../../domain.ts";
 import {Flex, Input, Tag, theme} from "antd";
 import {ChangeEvent, useState} from "react";
 
@@ -27,6 +27,13 @@ export function InputTags({values, onChange, placeholder}: Props) {
     };
 
     return <>
+        <Input type="text"
+               placeholder={placeholder}
+               value={inputValue}
+               onChange={handleInputChange}
+               onBlur={handleInputConfirm}
+               onPressEnter={handleInputConfirm}
+        />
         <Flex wrap>
             {values.map(repositoryId => <Tag
                 style={{
@@ -36,6 +43,7 @@ export function InputTags({values, onChange, placeholder}: Props) {
                     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                     padding: `${token.paddingXXS}px ${token.paddingXS}px`
                 }}
+                color="blue"
                 key={repositoryId}
                 closable={true}
                 onClose={() => {
@@ -44,12 +52,5 @@ export function InputTags({values, onChange, placeholder}: Props) {
                 {repositoryId}
             </Tag>)}
         </Flex>
-        <Input type="text"
-               placeholder={placeholder}
-               value={inputValue}
-               onChange={handleInputChange}
-               onBlur={handleInputConfirm}
-               onPressEnter={handleInputConfirm}
-        />
     </>
 }

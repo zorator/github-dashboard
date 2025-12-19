@@ -1,11 +1,12 @@
-import {createContext, PropsWithChildren, useMemo, useState} from "react";
+import {createContext, PropsWithChildren, useEffect, useMemo, useState} from "react";
 import GithubApi from "../github.api.ts";
 import {
     GithubRepositoryData,
     Organization,
     OrganizationId,
     OrganizationWithConfig,
-    RepositoryConfig
+    RepositoryGroupConfig,
+    RepositoryId
 } from "../domain.ts";
 import {usePromise, UsePromiseStatus} from "../hooks/promise.hook.ts";
 import {convertToOrganizationConfig} from "../utils/utils.ts";
@@ -18,7 +19,7 @@ interface OrganizationsContextType {
     organizationsLoadingStatus: UsePromiseStatus,
     selectedOrganization: OrganizationWithConfig | null,
     selectOrganization: (id: OrganizationId) => void
-    fetchRepository: (organizationId: OrganizationId, repoConfig: RepositoryConfig) => Promise<GithubRepositoryData>
+    fetchRepository: (organizationId: OrganizationId, groupConfig: RepositoryGroupConfig, repositoryId: RepositoryId) => Promise<GithubRepositoryData>
 }
 
 export const OrganizationsContext = createContext<OrganizationsContextType>({
@@ -58,12 +59,12 @@ export const OrganizationsProvider = ({children}: PropsWithChildren) => {
         }
     };
 
-    const fetchRepository = async (organizationId: OrganizationId, repoConfig: RepositoryConfig): Promise<GithubRepositoryData> => {
-        const key = `${organizationId}-${repoConfig.id}`
+    const fetchRepository = async (organizationId: OrganizationId, groupConfig: RepositoryGroupConfig, repositoryId: RepositoryId): Promise<GithubRepositoryData> => {
+        const key = `${organizationId}-${repositoryId}`
         if (repositoryCache[key]) {
             return repositoryCache[key]
         }
-        const repoPromise = GithubGraphql.getRepositoryData(organizationId, repoConfig);
+        const repoPromise = GithubGraphql.getRepositoryData(organizationId, groupConfig, repositoryId);
         setRepositoryCache(prevState => ({...prevState, [key]: repoPromise}));
         return repoPromise;
     }
