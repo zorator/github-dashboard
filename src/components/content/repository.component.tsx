@@ -5,6 +5,7 @@ import ReleaseStateComponent from "./release-state.component.tsx";
 import BranchesStateComponent from "./branches-state.component.tsx";
 import {useContext} from "react";
 import {OrganizationsContext} from "../../contexts/organizations.context.tsx";
+import {Flex, Skeleton, Space} from "antd";
 
 interface Props {
     organizationId: OrganizationId
@@ -38,12 +39,34 @@ function RepositoryComponent({repositoryId, groupConfig, organizationId}: Props)
         </h3>
         {
             status === "loading"
-                ? "Chargement en cours"
+                ? <PullRequestsSkeleton/>
                 : (repoData?.pullRequests || []).map((pr) =>
                     <PullRequestComponent pullRequest={pr} key={pr.id}/>)
         }
     </div>
 }
+
+const PullRequestsSkeleton = () => <Space vertical size={3}>
+    <Flex gap="small" align="center">
+        <Skeleton.Avatar active/>
+        <Skeleton.Input size="small" active style={{width: 550}}/>
+        <Skeleton.Button size="small" active/>
+        <Skeleton.Button size="small" active/>
+    </Flex>
+    <Flex gap="small" align="center">
+        <Skeleton.Avatar active/>
+        <Skeleton.Input size="small" active/>
+        <Skeleton.Button size="small" active/>
+        <Skeleton.Avatar active/>
+    </Flex>
+    <Flex gap="small" align="center">
+        <Skeleton.Avatar active/>
+        <Skeleton.Input size="small" active style={{width: 300}}/>
+        <Skeleton.Button size="small" active/>
+        <Skeleton.Avatar active/>
+        <Skeleton.Avatar active/>
+    </Flex>
+</Space>
 
 
 export default RepositoryComponent;

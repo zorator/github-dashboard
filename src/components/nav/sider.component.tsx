@@ -1,8 +1,7 @@
 import {Layout, Menu, MenuProps} from "antd";
 import {useBoolean} from "usehooks-ts";
 import {FilterFilled, PullRequestOutlined} from "@ant-design/icons";
-import {MenuInfo} from "rc-menu/lib/interface";
-
+import {MenuInfo} from "@rc-component/menu/lib/interface";
 
 export type Screen = 'pull-requests' | 'config';
 type MenuItem = Required<MenuProps>['items'][number];

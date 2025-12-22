@@ -34,7 +34,7 @@ function App() {
                                 onChange={toggleDarkMode}
                             />
                         </Layout.Header>
-                        <Layout.Content style={{padding: '0 48px 24px 48px'}}>
+                        <Layout.Content style={{padding: '0 48px 24px 24px'}}>
                             {selectedScreen == 'pull-requests'
                                 ? <OrganizationComponent/>
                                 : <FilterComponent/>}
