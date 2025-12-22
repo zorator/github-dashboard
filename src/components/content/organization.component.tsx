@@ -1,20 +1,41 @@
 import RepositoryComponent from "./repository.component.tsx";
-import {Typography} from "antd";
+import {Badge, Collapse, CollapseProps, Typography} from "antd";
 import {OrganizationsContext} from "../../contexts/organizations.context.tsx";
-import React, {useContext} from "react";
+import {useContext, useMemo} from "react";
 
 export function OrganizationComponent() {
 
     const {selectedOrganization} = useContext(OrganizationsContext);
 
-    return selectedOrganization ? <div>
-        {selectedOrganization.groups.map((group, index) => <React.Fragment key={`${group.name}-${index.toString()}`}>
-            <Typography.Title level={3}>{group.name}</Typography.Title>
-            {group.repositories.map((repositoryId) =>
+    const items = useMemo<CollapseProps['items']>(() => {
+        if (selectedOrganization == null) {
+            return []
+        }
+        return selectedOrganization.groups.map((group, index) => ({
+            key: `${group.name}-${index.toString()}`,
+            label: <Typography.Title level={3} style={{margin: 'auto'}}>{group.name}</Typography.Title>,
+            children: group.repositories.map((repositoryId) =>
                 <RepositoryComponent key={repositoryId}
                                      groupConfig={group}
                                      repositoryId={repositoryId}
-                                     organizationId={selectedOrganization.id}/>)}
-        </React.Fragment>)}
-    </div> : null
+                                     organizationId={selectedOrganization.id}/>),
+            extra: <Badge count={group.repositories.length} showZero color="blue"/>
+        }))
+    }, [selectedOrganization])
+
+    return selectedOrganization
+        ? <Collapse items={items}
+                    defaultActiveKey={['1']}
+                    bordered={false}
+                    style={{
+                        marginTop: '24px'
+                    }}
+                    styles={{
+                        header: {
+                            display: 'flex',
+                            alignItems: 'center'
+                        }
+                    }}
+        />
+        : null
 }
