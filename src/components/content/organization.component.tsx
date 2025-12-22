@@ -3,10 +3,12 @@ import {Badge, Collapse, Typography} from "antd";
 import {OrganizationsContext} from "../../contexts/organizations.context.tsx";
 import {useContext, useMemo} from "react";
 import {ItemType} from "@rc-component/collapse/es/interface";
+import {useLocalStorage} from "@uidotdev/usehooks";
 
 export function OrganizationComponent() {
 
     const {selectedOrganization} = useContext(OrganizationsContext);
+    const [defaultActiveKey, setDefaultActiveKey] = useLocalStorage<string[]>('OrganizationComponent.defaultActiveKey')
 
     const items = useMemo<ItemType[]>(() => {
         if (selectedOrganization == null) {
@@ -26,7 +28,8 @@ export function OrganizationComponent() {
 
     return selectedOrganization
         ? <Collapse items={items}
-                    defaultActiveKey={items.length > 0 ? items[0].key as string : undefined}
+                    defaultActiveKey={defaultActiveKey}
+                    onChange={setDefaultActiveKey}
                     bordered={false}
                     style={{
                         marginTop: '24px'
