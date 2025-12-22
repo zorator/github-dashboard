@@ -1,13 +1,14 @@
 import RepositoryComponent from "./repository.component.tsx";
-import {Badge, Collapse, CollapseProps, Typography} from "antd";
+import {Badge, Collapse, Typography} from "antd";
 import {OrganizationsContext} from "../../contexts/organizations.context.tsx";
 import {useContext, useMemo} from "react";
+import {ItemType} from "@rc-component/collapse/es/interface";
 
 export function OrganizationComponent() {
 
     const {selectedOrganization} = useContext(OrganizationsContext);
 
-    const items = useMemo<CollapseProps['items']>(() => {
+    const items = useMemo<ItemType[]>(() => {
         if (selectedOrganization == null) {
             return []
         }
@@ -25,7 +26,7 @@ export function OrganizationComponent() {
 
     return selectedOrganization
         ? <Collapse items={items}
-                    defaultActiveKey={['1']}
+                    defaultActiveKey={items.length > 0 ? items[0].key as string : undefined}
                     bordered={false}
                     style={{
                         marginTop: '24px'

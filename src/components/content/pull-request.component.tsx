@@ -1,5 +1,4 @@
 import PullRequestStatusComponent from "./pull-request-status.component.tsx";
-import {Space} from "antd";
 import UserAvatarComponent from "./user-avatar.component.tsx";
 import {PullRequest} from "../../domain.ts";
 
@@ -8,11 +7,11 @@ interface Props {
 }
 
 function PullRequestComponent({pullRequest}: Props) {
-    return <Space style={{display: 'flex', flexWrap: 'wrap'}}>
+    return <div className="pull-request-inline">
         <UserAvatarComponent user={pullRequest.author}/>
         <a href={pullRequest.url} target="_blank" rel="noreferrer">{pullRequest.title}</a>
         <PullRequestStatusComponent pullRequest={pullRequest}/>
-    </Space>
+    </div>
 }
 
 export default PullRequestComponent

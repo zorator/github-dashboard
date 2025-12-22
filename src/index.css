@@ -33,3 +33,6 @@ code {
 .tag-with-icon-error > span[role='img'] {
     color: #dc4446;
 }
+.pull-request-inline > * + * {
+    margin-left: var(--ant-padding-xs);
+}
