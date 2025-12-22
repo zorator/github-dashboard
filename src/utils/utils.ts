@@ -4,14 +4,13 @@ import {Organization, OrganizationWithConfig, RepositoryGroupConfig} from "../do
 export const isNotNullish = <T>(value: T | null | undefined): value is T =>
     value !== undefined && value !== null;
 
-
 export const convertToOrganizationConfig = (config: FilterConfigV3, organization: Organization | null): OrganizationWithConfig => {
-    if (!organization || !config[organization.id]) {
+    if (!organization) {
         return {
             id: '', label: '', groups: [], avatarUrl: ''
         }
     }
-    const organizationGroupsConfig = config[organization.id] as unknown as GroupConfigV3[];
+    const organizationGroupsConfig = (config[organization.id]||[]) as unknown as GroupConfigV3[];
     return {
         ...organization,
         groups: organizationGroupsConfig.map((group: GroupConfigV3): RepositoryGroupConfig => ({
