@@ -1,4 +1,4 @@
-import {Menu, MenuProps, Skeleton} from "antd";
+import {Avatar, Menu, MenuProps, Skeleton, Space} from "antd";
 import {useContext} from "react";
 import {OrganizationsContext} from "../../contexts/organizations.context.tsx";
 import {SelectInfo} from "@rc-component/menu/lib/interface";
@@ -25,7 +25,7 @@ const OrganizationMenuComponent = () => {
     }
     const menuItems: MenuProps['items'] = organizations.map((organization) => ({
         key: organization.id,
-        label: organization.label
+        label: <Space><Avatar src={organization.avatarUrl}/>{organization.label}</Space>
     }))
     return <Menu
         theme="dark"

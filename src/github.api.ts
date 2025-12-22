@@ -6,7 +6,6 @@ const octokit = new Octokit({
     auth: import.meta.env.VITE_GITHUB_TOKEN
 })
 
-
 const getOrganizations = async (): Promise<Organization[]> => {
     const user = await octokit.request('GET /user', {
         headers: {
@@ -19,8 +18,12 @@ const getOrganizations = async (): Promise<Organization[]> => {
         }
     }).then(res => res.data)
     return [
-        {id: user.login, label: user.login},
-        ...organizations.map(organization => ({id: organization.login, label: organization.login}))
+        {id: user.login, label: user.login, avatarUrl: user.avatar_url},
+        ...organizations.map((organization): Organization => ({
+            id: organization.login,
+            label: organization.login,
+            avatarUrl: organization.avatar_url
+        }))
     ]
 }
 

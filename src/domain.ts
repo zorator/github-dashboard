@@ -36,6 +36,7 @@ export interface PullRequest {
 export interface Organization {
     id: OrganizationId
     label: string
+    avatarUrl: string
 }
 
 export interface GithubRepositoryData {

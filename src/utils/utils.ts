@@ -8,7 +8,7 @@ export const isNotNullish = <T>(value: T | null | undefined): value is T =>
 export const convertToOrganizationConfig = (config: FilterConfigV3, organization: Organization | null): OrganizationWithConfig => {
     if (!organization || !config[organization.id]) {
         return {
-            id: '', label: '', groups: []
+            id: '', label: '', groups: [], avatarUrl: ''
         }
     }
     const organizationGroupsConfig = config[organization.id] as unknown as GroupConfigV3[];
