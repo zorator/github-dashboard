@@ -1,9 +1,9 @@
-import {GroupConfigV3} from "../../hooks/filter-config.hook.ts";
+import {GroupConfigV3, GroupConfigV3Parser} from "../../hooks/filter-config.hook.ts";
 import {Organization} from "../../domain.ts";
 import {useCallback, useMemo} from "react";
 import {ItemType} from "@rc-component/collapse/es/interface";
-import {Button, Collapse, Typography} from "antd";
-import {AppstoreAddOutlined} from "@ant-design/icons";
+import {Button, Collapse, message, Space, Typography} from "antd";
+import {AppstoreAddOutlined, ImportOutlined} from "@ant-design/icons";
 import {RepositoryGroupConfigComponent} from "./repository-group-config.component.tsx";
 import {RepositoryGroupConfigActionsComponent} from "./repository-group-config-actions.component.tsx";
 
@@ -14,6 +14,7 @@ interface Props {
 }
 
 export function OrganizationConfigComponent({groups, setGroups, organization}: Props) {
+    const [messageApi, contextHolder] = message.useMessage();
 
     const updateGroup = useCallback((groupIdx: number, newGroup: GroupConfigV3) => {
         setGroups(groups.map((group, index) => {
@@ -29,6 +30,18 @@ export function OrganizationConfigComponent({groups, setGroups, organization}: P
         setGroups([...groups, {name: 'new group', repositoryIds: [], showIndicators: false}])
     }, [groups, setGroups])
 
+    const importGroup = useCallback(() => {
+        void navigator.clipboard.readText().then(data => {
+            try {
+                setGroups([...groups, GroupConfigV3Parser.parse(JSON.parse(data))])
+                return messageApi.info('Group imported !')
+            } catch (e) {
+                console.error('Error during import', e)
+                return messageApi.error('Error during import')
+            }
+        })
+    }, [groups, setGroups, messageApi])
+
     const switchGroups = useCallback((fromIndex: number, toIndex: number) => {
         const fromGroup = groups[fromIndex]
         const toGroup = groups[toIndex]
@@ -42,12 +55,16 @@ export function OrganizationConfigComponent({groups, setGroups, organization}: P
         }));
     }, [groups, setGroups])
 
+    const copyGroup = useCallback((group: GroupConfigV3) => {
+        void navigator.clipboard.writeText(JSON.stringify(group))
+            .then(() => messageApi.info('Group config copied !'))
+    }, [messageApi])
+
     const items = useMemo<ItemType[]>(() => {
         return groups.map((group, groupIdx) => ({
             key: `${group.name}-${groupIdx.toString()}`,
             label: <Typography.Title level={3} style={{margin: 'auto'}}>{group.name}</Typography.Title>,
             children: <RepositoryGroupConfigComponent
-                key={`${group.name}-${groupIdx.toString()}`}
                 group={group}
                 updateGroup={newGroup => {
                     updateGroup(groupIdx, newGroup);
@@ -62,16 +79,19 @@ export function OrganizationConfigComponent({groups, setGroups, organization}: P
                 onDelete={() => {
                     deleteGroup(groupIdx);
                 }}
+                onCopy={() => {
+                    copyGroup(group);
+                }}
             />
         }))
-    }, [groups, updateGroup, switchGroups, deleteGroup])
+    }, [groups, updateGroup, switchGroups, deleteGroup, copyGroup])
 
     return <>
+        {contextHolder}
         <Typography.Title level={2}>
             {organization.label}
         </Typography.Title>
         <Collapse items={items}
-                  bordered={false}
                   style={{
                       marginTop: '24px'
                   }}
@@ -82,10 +102,19 @@ export function OrganizationConfigComponent({groups, setGroups, organization}: P
                       }
                   }}
         />
-        <Button type="primary"
-                icon={<AppstoreAddOutlined/>}
-                onClick={createGroup}>
-            Add new group
-        </Button>
+        <Space style={{
+            marginTop: '24px'
+        }}>
+            <Button type="primary"
+                    icon={<AppstoreAddOutlined/>}
+                    onClick={createGroup}>
+                Add new group
+            </Button>
+            <Button type="primary"
+                    icon={<ImportOutlined/>}
+                    onClick={importGroup}>
+                Import from clipboard
+            </Button>
+        </Space>
     </>
 }

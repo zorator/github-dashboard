@@ -19,10 +19,20 @@ export function InputTags({values, onChange, placeholder}: Props) {
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
     };
+
     const handleInputConfirm = () => {
-        if (inputValue && !values.includes(inputValue)) {
-            onChange([...values, inputValue]);
-        }
+        const inputValues = (inputValue || '')
+            .trim()
+            .split(/[\s,]+/)
+            // trim resulting values
+            .map(newValue => (newValue || '').trim())
+            // filter empty values
+            .filter(newValue => newValue != '');
+            // remove duplicates
+        const newValues = [...new Set(inputValues)]
+            // filter already present
+            .filter(newValue => !values.includes(newValue))
+        onChange([...values, ...newValues]);
         setInputValue('');
     };
 

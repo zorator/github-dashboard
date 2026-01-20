@@ -1,14 +1,15 @@
 import {Button, Flex} from "antd";
-import {DeleteOutlined, DownCircleOutlined, UpCircleOutlined} from "@ant-design/icons";
+import {CopyOutlined, DeleteOutlined, DownCircleOutlined, UpCircleOutlined} from "@ant-design/icons";
 
 interface Props {
     onMoveBefore?: () => void
     onMoveAfter?: () => void
     onDelete: () => void
+    onCopy: () => void
 }
 
 export function RepositoryGroupConfigActionsComponent(
-    {onMoveBefore, onMoveAfter, onDelete}: Props) {
+    {onMoveBefore, onMoveAfter, onDelete, onCopy}: Props) {
 
     return <Flex gap="small" wrap justify="flex-end"
                  onClick={event => {
@@ -29,6 +30,12 @@ export function RepositoryGroupConfigActionsComponent(
                 shape="circle"
                 disabled={!onMoveAfter}
                 onClick={onMoveAfter}/>
+        <Button title="Copy group"
+                type="primary"
+
+                icon={<CopyOutlined />}
+                shape="circle"
+                onClick={onCopy}/>
         <Button title="Delete group"
                 type="primary"
                 danger

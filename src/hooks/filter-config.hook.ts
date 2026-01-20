@@ -1,6 +1,7 @@
 // using localStorage hook from another lib than usehook-ts as it is buggy
 import {useLocalStorage} from "@uidotdev/usehooks";
 import {OrganizationId, RepositoryId, UserLogin} from "../domain.ts";
+import {z} from "zod";
 
 
 export interface OrganizationConfigV1 {
@@ -14,12 +15,14 @@ export interface OrganizationConfigV2 {
     userLogins?: UserLogin[]
 }
 
-export interface GroupConfigV3 {
-    name: string,
-    repositoryIds: RepositoryId[],
-    userLogins?: UserLogin[],
-    showIndicators: boolean
-}
+export const GroupConfigV3Parser = z.object({
+    name: z.string().default('Unknown group'),
+    showIndicators: z.boolean().default(false),
+    repositoryIds: z.array(z.string()).default([]),
+    userLogins: z.optional(z.array(z.string())),
+});
+
+export type GroupConfigV3 = z.infer<typeof GroupConfigV3Parser>;
 
 export type FilterConfigV1 = Record<OrganizationId, OrganizationConfigV1>
 export type FilterConfigV2 = Record<OrganizationId, OrganizationConfigV2 | undefined>
@@ -32,10 +35,8 @@ type UseConfigReturn = {
 
 export function useFilterConfig(): UseConfigReturn {
     const [teamConfig] = useLocalStorage<FilterConfigV1>('repo-filter-team', {})
-    const [globalConfig] = useLocalStorage<FilterConfigV1>('repo-filter-global', {})
-
-    const [filterConfigV2] = useLocalStorage<FilterConfigV2>('repo-config', convertV1toV2(teamConfig, globalConfig))
-
+    const [filterConfigV1] = useLocalStorage<FilterConfigV1>('repo-filter-global', {})
+    const [filterConfigV2] = useLocalStorage<FilterConfigV2>('repo-config', convertV1toV2(teamConfig, filterConfigV1))
     const [filterConfig, setFilterConfig] = useLocalStorage<FilterConfigV3>('grouped-repo-config', convertV2toV3(filterConfigV2))
 
     return {
